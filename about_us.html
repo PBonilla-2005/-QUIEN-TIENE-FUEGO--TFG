@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nosotros — ¿Quién tiene fuego?</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Animación de aparición al hacer scroll (Premium touch) */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    
+    /* Pequeños ajustes específicos para los textos de esta página */
+    .story-text-box { background: #0a0a0a; border-radius: 10px; color: #ffffff; font-size: 18px; line-height: 1.6; padding: 30px; display: flex; flex-direction: column; justify-content: center; }
+    .story-text-box h2 { color: #d4af37; margin-top: 5px; font-size: 28px; }
+    .story-text-box .label { color: #888; text-transform: uppercase; letter-spacing: 2px; font-size: 14px; font-weight: bold; margin: 0; }
+  </style>
+</head>
+<body>
+
+  <header class="main-header full-width">
+    <nav class="menu">
+      <div class="logo">
+        <a href="index.html">
+          <img src="logo.svg" alt="Logo ¿Quién tiene fuego?" style="height: 60px; display: block;">
+        </a>
+      </div>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="tienda.html">Tienda</a></li>
+        <li><a href="about_us.html" class="active">About Us</a></li>
+        <li><a href="cesta.html">Cesta <span id="cart-count" style="background:#d4af37; color:black; padding:2px 6px; border-radius:50%; font-size:12px; display:none;">0</span></a></li>
+        <li id="nav-account-item"></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <img src="IMAGENES/IMAGEN_INDEX.png" alt="Tu estilo, nuestra pasión">
+    <div class="hero-text" style="width: 80%;">
+      Construido con <br><em style="color:#fff;">las manos en la masa</em>
+      <p style="font-size: 20px; font-weight: normal; margin-top: 20px;">Dos estudiantes. Una idea que no cabía en un aula. Y la determinación de hacerla real.</p>
+    </div>
+  </section>
+
+  <section class="full-width" style="margin-top: 60px;">
+    <div class="about-grid reveal">
+      <div class="about-image">
+        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=75" alt="El equipo">
+      </div>
+      <div class="story-text-box">
+        <p class="label">El origen</p>
+        <h2>Dos estudiantes con una idea más grande que el aula</h2>
+        <p>Somos estudiantes del grado de DAM — Desarrollo de Aplicaciones Multiplataforma — que decidieron que construir algo propio era más interesante que esperar a terminar la carrera para hacerlo.</p>
+        <p>¿Quién tiene fuego? no es solo una tienda. Es una afirmación. La prueba de que con criterio, trabajo y ambición no hace falta experiencia previa para hacer las cosas bien.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="full-width reveal" style="margin: 60px auto;">
+    <div style="background: #1a1a1a; border: 1px solid #d4af37; border-radius: 10px; padding: 40px; display: flex; justify-content: space-around; flex-wrap: wrap; text-align: center; gap: 20px;">
+      <div>
+        <div style="font-size: 48px; color: #d4af37; font-weight: bold; margin-bottom: 10px;">2</div>
+        <div style="color: #fff; text-transform: uppercase; letter-spacing: 1px;">Fundadores</div>
+      </div>
+      <div>
+        <div style="font-size: 48px; color: #d4af37; font-weight: bold; margin-bottom: 10px;">100%</div>
+        <div style="color: #fff; text-transform: uppercase; letter-spacing: 1px;">Pasión propia</div>
+      </div>
+      <div>
+        <div style="font-size: 48px; color: #d4af37; font-weight: bold; margin-bottom: 10px;">∞</div>
+        <div style="color: #fff; text-transform: uppercase; letter-spacing: 1px;">Horas de Discord</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="full-width">
+    <div class="about-grid reveal">
+      <div class="story-text-box">
+        <p class="label">El proceso</p>
+        <h2>Empezó en clase.<br>Y nos dimos cuenta de que tenía potencia.</h2>
+        <p>Lo arrancamos como un proyecto de DAM — el típico trabajo que presentas, te puntúan y archivas. Pero mientras lo íbamos construyendo, algo cambió: nos dimos cuenta de que la idea tenía mucho más recorrido del que habíamos pensado al principio.</p>
+        <p>Así que decidimos no dejarlo en un entregable. El objetivo ahora es convertirlo en una tienda online completamente funcional, con catálogo real, pasarela de pago y todo lo que conlleva montar un negocio digital desde cero. Seguimos siendo estudiantes, sí — pero este proyecto ya va en serio.</p>
+      </div>
+      <div class="about-image">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=75" alt="Trabajando">
+      </div>
+    </div>
+  </section>
+
+  <section class="full-width" style="margin-top: 60px;">
+    <div class="about-grid reveal">
+      <div class="about-image">
+        <img src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=800&q=75" alt="Estanco">
+      </div>
+      <div class="story-text-box">
+        <p class="label">La visión</p>
+        <h2>Un sector que no ha cambiado. Nosotros sí.</h2>
+        <p>El estanco lleva décadas funcionando exactamente igual. Mismo mostrador, misma ausencia de identidad, misma experiencia que no deja ninguna impresión. Es un negocio que sobrevive por inercia, no por propuesta de valor.</p>
+        <p>Hay un producto de calidad, una clientela fiel y un espacio con potencial real. Lo único que le falta es alguien que se tome en serio la experiencia — desde el diseño hasta la presencia digital.</p>
+        <p>¿Quién tiene fuego? nació de esa convicción: que incluso los sectores más tradicionales pueden reinventarse cuando hay voluntad y criterio para hacerlo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="full-width reveal" style="text-align: center; margin: 100px auto;">
+    <p style="font-size: 32px; color: #d4af37; font-style: italic; line-height: 1.4; margin-bottom: 20px;">
+      "No esperamos tener más experiencia<br>para hacer las cosas con <span style="color:#fff;">excelencia</span>."
+    </p>
+    <span style="color: #888; font-size: 16px; text-transform: uppercase; letter-spacing: 2px;">— ¿Quién tiene fuego?, desde el principio</span>
+  </section>
+
+  <section class="full-width reveal" style="margin-bottom: 80px;">
+    <div style="text-align: center; margin-bottom: 40px;">
+      <p class="label" style="color: #888; text-transform: uppercase; letter-spacing: 2px; font-size: 14px; font-weight: bold;">Las personas</p>
+      <h2 style="color: #d4af37; font-size: 32px; margin-top: 10px;">El equipo</h2>
+      <p style="color: #ccc;">Dos perfiles distintos que se complementan: uno piensa en píxeles, el otro en sistemas.</p>
+    </div>
+    
+    <div class="about-grid">
+      <div class="about-content" style="text-align: center; margin: 0; height: 100%;">
+        <div style="width: 70px; height: 70px; background: #d4af37; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; margin: 0 auto 20px;">A</div>
+        <h3 style="color: #d4af37; margin-bottom: 5px;">Diseño & Marca</h3>
+        <p style="color: #888; font-size: 14px; text-transform: uppercase; margin-top: 0;">Identidad visual · UX</p>
+        <p>Responsable de que todo se vea bien y tenga sentido. Obsesionado con los detalles que nadie nota pero todos sienten.</p>
+      </div>
+      <div class="about-content" style="text-align: center; margin: 0; height: 100%;">
+        <div style="width: 70px; height: 70px; background: #d4af37; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; margin: 0 auto 20px;">B</div>
+        <h3 style="color: #d4af37; margin-bottom: 5px;">Desarrollo & Producto</h3>
+        <p style="color: #888; font-size: 14px; text-transform: uppercase; margin-top: 0;">Ingeniería · Negocio</p>
+        <p>El que hace que las cosas funcionen. Desde la lógica del carrito hasta la estrategia de lo que vendemos y cómo lo vendemos.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="full-width reveal" style="margin-bottom: 80px;">
+    <div style="text-align: center; margin-bottom: 40px;">
+      <p class="label" style="color: #888; text-transform: uppercase; letter-spacing: 2px; font-size: 14px; font-weight: bold;">Principios</p>
+      <h2 style="color: #d4af37; font-size: 32px; margin-top: 10px;">Nuestros valores</h2>
+      <p style="color: #ccc;">Lo que nos guía cuando nadie nos está mirando.</p>
+    </div>
+    
+    <div class="grid">
+      <div class="item" style="flex-direction: column; text-align: center; padding: 30px; justify-content: flex-start;">
+        <div style="font-size: 40px; margin-bottom: 15px;">🔥</div>
+        <h3 style="color:#d4af37; margin:0 0 10px 0;">Pasión</h3>
+        <p style="color:#ccc; font-size: 15px; line-height: 1.5;">Hacemos esto porque lo elegimos. Cada decisión viene de un compromiso real con el proyecto.</p>
+      </div>
+      <div class="item" style="flex-direction: column; text-align: center; padding: 30px; justify-content: flex-start;">
+        <div style="font-size: 40px; margin-bottom: 15px;">🚀</div>
+        <h3 style="color:#d4af37; margin:0 0 10px 0;">Ambición</h3>
+        <p style="color:#ccc; font-size: 15px; line-height: 1.5;">No construimos para cumplir. Construimos para que escale y dentro de unos años tenga sentido haber empezado hoy.</p>
+      </div>
+      <div class="item" style="flex-direction: column; text-align: center; padding: 30px; justify-content: flex-start;">
+        <div style="font-size: 40px; margin-bottom: 15px;">🤝</div>
+        <h3 style="color:#d4af37; margin:0 0 10px 0;">Confianza</h3>
+        <p style="color:#ccc; font-size: 15px; line-height: 1.5;">Entre nosotros, con clientes y producto. Sin confianza no hay marca que valga la pena defender.</p>
+      </div>
+      <div class="item" style="flex-direction: column; text-align: center; padding: 30px; justify-content: flex-start;">
+        <div style="font-size: 40px; margin-bottom: 15px;">💡</div>
+        <h3 style="color:#d4af37; margin:0 0 10px 0;">Creatividad</h3>
+        <p style="color:#ccc; font-size: 15px; line-height: 1.5;">Las limitaciones no nos frenan — nos obligan a pensar mejor y encontrar soluciones donde otros ven obstáculos.</p>
+      </div>
+      <div class="item" style="flex-direction: column; text-align: center; padding: 30px; justify-content: flex-start;">
+        <div style="font-size: 40px; margin-bottom: 15px;">📐</div>
+        <h3 style="color:#d4af37; margin:0 0 10px 0;">Excelencia</h3>
+        <p style="color:#ccc; font-size: 15px; line-height: 1.5;">El estándar lo marcamos nosotros. Nos importa cómo se ve y cómo funciona cada cosa que hacemos.</p>
+      </div>
+      <div class="item" style="flex-direction: column; text-align: center; padding: 30px; justify-content: flex-start;">
+        <div style="font-size: 40px; margin-bottom: 15px;">🌱</div>
+        <h3 style="color:#d4af37; margin:0 0 10px 0;">Evolución</h3>
+        <p style="color:#ccc; font-size: 15px; line-height: 1.5;">Revisamos, ajustamos y mejoramos de forma continua porque un proyecto que no evoluciona ya está muriendo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta full-width reveal">
+    <h2 style="color: #d4af37;">Lo que hacemos, puedes verlo aquí</h2>
+    <p style="color: #ccc; font-size: 18px; margin-bottom: 30px;">Una selección de productos cuidada con el mismo criterio que aplicamos a todo lo demás.</p>
+    <a href="tienda.html" class="btn">Explorar la tienda</a>
+  </section>
+
+  <footer class="footer full-width">
+    <p>&copy; 2026 ¿Quién tiene fuego? — Todos los derechos reservados.</p>
+  </footer>
+
+  <script src="account.js"></script>
+  <script src="cart.js"></script>
+  <script>
+    // Lógica para que los elementos aparezcan al hacer scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { 
+        if (e.isIntersecting) { 
+          e.target.classList.add('visible'); 
+          io.unobserve(e.target); 
+        } 
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

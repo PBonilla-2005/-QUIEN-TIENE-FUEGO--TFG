@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finalizar Compra - ¿Quién tiene fuego?</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .checkout-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; margin: 40px auto; max-width: 1200px; padding: 0 20px; }
+    .checkout-box { background: #1a1a1a; border: 1px solid #d4af37; border-radius: 12px; padding: 30px; }
+    .checkout-box h2 { color: #d4af37; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 15px; }
+    .card-element { display: flex; gap: 10px; margin-top: 10px; }
+    #loader { display: none; text-align: center; margin-top: 20px; color: #d4af37; font-weight: bold; }
+    @media (max-width: 800px) { .checkout-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <header class="main-header full-width">
+    <nav class="menu">
+      <div class="logo">
+        <a href="index.html">
+          <img src="logo.svg" alt="Logo ¿Quién tiene fuego?" style="height: 60px; display: block;">
+        </a>
+      </div>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="tienda.html">Tienda</a></li>
+        <li><a href="about_us.html">About Us</a></li>
+        <li><a href="cesta.html">Cesta</a></li>
+        <li id="nav-account-item"></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="checkout-grid">
+    <!-- Formulario de Pago y Envío -->
+    <div class="checkout-box">
+      <h2>1. Dirección de Envío</h2>
+      <form id="payment-form" onsubmit="procesarPago(event)">
+        <div class="form-group" style="margin-bottom: 15px;">
+          <label>Dirección completa</label>
+          <input type="text" placeholder="Calle, número, piso, puerta..." required>
+        </div>
+        <div class="card-element" style="margin-bottom: 30px;">
+          <div class="form-group" style="flex: 1;"><label>Ciudad</label><input type="text" required></div>
+          <div class="form-group" style="flex: 1;"><label>Código Postal</label><input type="text" required></div>
+        </div>
+
+        <h2>2. Pago Seguro (Simulado)</h2>
+        <div class="form-group" style="margin-bottom: 15px;">
+          <label>Titular de la tarjeta</label>
+          <input type="text" placeholder="Nombre como aparece en la tarjeta" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 15px;">
+          <label>Número de Tarjeta</label>
+          <input type="text" placeholder="0000 0000 0000 0000" maxlength="16" required>
+        </div>
+        <div class="card-element">
+          <div class="form-group" style="flex: 1;"><label>Caducidad (MM/AA)</label><input type="text" placeholder="12/25" required></div>
+          <div class="form-group" style="flex: 1;"><label>CVV</label><input type="password" placeholder="123" maxlength="3" required></div>
+        </div>
+
+        <button type="submit" class="btn full-width-btn" style="margin-top: 30px; font-size: 18px;" id="pay-btn">PAGAR AHORA</button>
+        <div id="loader">Procesando pago seguro... ⏳</div>
+      </form>
+    </div>
+
+    <!-- Resumen del Pedido -->
+    <div class="checkout-box" style="height: fit-content;">
+      <h2>Resumen de tu pedido</h2>
+      <div id="checkout-items" style="margin-bottom: 20px;"></div>
+      <hr style="border-color: #333;">
+      <div style="display: flex; justify-content: space-between; font-size: 22px; font-weight: bold; color: #d4af37; margin-top: 15px;">
+        <span>Total a pagar:</span>
+        <span id="checkout-total">$0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="account.js"></script>
+  <script>
+    // 1. Cargar el resumen al abrir la página
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser) {
+        alert('Inicia sesión primero.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      if (cart.length === 0) {
+        window.location.href = 'tienda.html';
+        return;
+      }
+
+      let total = 0;
+      let itemsHTML = '';
+      cart.forEach(item => {
+        total += item.price * item.qty;
+        itemsHTML += `
+          <div style="display:flex; justify-content: space-between; color: #fff; margin-bottom: 10px; font-size: 14px;">
+            <span>${item.qty}x ${item.name}</span>
+            <span>$${(item.price * item.qty).toFixed(2)}</span>
+          </div>
+        `;
+      });
+
+      document.getElementById('checkout-items').innerHTML = itemsHTML;
+      document.getElementById('checkout-total').innerText = '$' + total.toFixed(2);
+    });
+
+    // 2. Función que se ejecuta al darle a PAGAR
+    async function procesarPago(e) {
+      e.preventDefault();
+      
+      const btn = document.getElementById('pay-btn');
+      const loader = document.getElementById('loader');
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      // Mostramos la animación de carga
+      btn.style.display = 'none';
+      loader.style.display = 'block';
+
+      // Simulamos que el banco tarda 2 segundos en responder
+      setTimeout(async () => {
+        try {
+          const respuesta = await fetch('procesar_pedido.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario_id: currentUser.id, carrito: cart })
+          });
+
+          const resultado = await respuesta.json();
+
+          if (resultado.success) {
+            localStorage.removeItem('cart'); // Vaciamos la cesta
+            alert('¡Pago aceptado! Tu número de pedido es #' + resultado.pedido_id);
+            window.location.href = 'perfil.html';
+          } else {
+            alert('Error en el pago: ' + resultado.error);
+            btn.style.display = 'block';
+            loader.style.display = 'none';
+          }
+        } catch (error) {
+          alert('Error conectando con el servidor.');
+          btn.style.display = 'block';
+          loader.style.display = 'none';
+        }
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

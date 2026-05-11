@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle del Producto - ¿Quién tiene fuego?</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .product-page-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: flex-start; min-height: 50vh; }
+    .product-image-box { background: #1a1a1a; border: 2px solid #d4af37; border-radius: 12px; padding: 20px; display: flex; justify-content: center; align-items: center; }
+    .product-image-box img { width: 100%; max-height: 500px; object-fit: contain; border-radius: 8px; }
+    .product-details { color: #fff; }
+    .product-details h1 { color: #d4af37; font-size: 36px; margin-top: 0; margin-bottom: 15px; }
+    .product-details .price { font-size: 28px; font-weight: bold; color: #fff; margin-bottom: 25px; display: inline-block; border-bottom: 2px solid #d4af37; padding-bottom: 5px; }
+    .product-details .description { color: #aaa; font-size: 18px; line-height: 1.6; margin-bottom: 40px; }
+    .action-box { display: flex; gap: 15px; align-items: center; background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px; }
+    .qty-selector { width: 70px; padding: 15px; font-size: 18px; background: #0a0a0a; border: 1px solid #d4af37; color: #fff; border-radius: 6px; text-align: center; }
+    .btn-large { flex: 1; padding: 16px 30px; font-size: 18px; }
+    @media (max-width: 800px) { .product-page-container { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <header class="main-header full-width">
+    <nav class="menu">
+      <div class="logo">
+        <a href="index.html">
+          <img src="logo.svg" alt="Logo" style="height: 60px; display: block;">
+        </a>
+      </div>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="tienda.html">Tienda</a></li>
+        <li><a href="about_us.html">About Us</a></li>
+        <li><a href="cesta.html">Cesta <span id="cart-count" style="background:#d4af37; color:black; padding:2px 6px; border-radius:50%; font-size:12px; display:none;">0</span></a></li>
+        <li id="nav-account-item"></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="product-page-container" id="product-container">
+    <h2 style="color: #d4af37; text-align: center; grid-column: 1 / -1;">Cargando producto...</h2>
+  </div>
+
+  <footer class="footer full-width">
+    <p>&copy; 2026 ¿Quién tiene fuego? — Todos los derechos reservados.</p>
+  </footer>
+
+  <script src="account.js"></script>
+  <script src="cart.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+      const container = document.getElementById('product-container');
+
+      if (!productId) {
+        container.innerHTML = '<h2 style="color:red; text-align:center; grid-column: 1 / -1;">Producto no encontrado.</h2>';
+        return;
+      }
+
+      try {
+        const respuesta = await fetch(`get_producto.php?id=${productId}`);
+        const prod = await respuesta.json();
+
+        if (prod.error) {
+          container.innerHTML = `<h2 style="color:red; text-align:center; grid-column: 1 / -1;">${prod.error}</h2>`;
+          return;
+        }
+
+        const descripcion = prod.descripcion ? prod.descripcion : "Un artículo premium de nuestra colección, diseñado para ofrecer la mejor experiencia.";
+
+        container.innerHTML = `
+          <div class="product-image-box">
+            <img src="${prod.imagen_url}" alt="${prod.nombre}">
+          </div>
+          <div class="product-details">
+            <h1>${prod.nombre}</h1>
+            <div class="price">$${parseFloat(prod.precio).toFixed(2)}</div>
+            <div class="description">${descripcion}</div>
+            
+            <div id="hidden-prod-data" class="product-card" data-id="${prod.id}" data-name="${prod.nombre}" data-price="${prod.precio}" data-img="${prod.imagen_url}" style="display:none;"></div>
+            
+            <div class="action-box">
+              <input type="number" id="detail-qty" class="qty-selector" value="1" min="1">
+              <button class="btn btn-large" onclick="addToCartFromDetail()">AÑADIR AL CARRITO</button>
+            </div>
+          </div>
+        `;
+      } catch (error) {
+        container.innerHTML = '<h2 style="color:red; text-align:center; grid-column: 1 / -1;">Error al cargar el servidor.</h2>';
+      }
+    });
+
+    function addToCartFromDetail() {
+      const qty = parseInt(document.getElementById('detail-qty').value);
+      const hiddenData = document.getElementById('hidden-prod-data');
+      for(let i=0; i<qty; i++){ addToCart(hiddenData); }
+      alert(`¡Añadido al carrito!`);
+    }
+  </script>
+</body>
+</html>

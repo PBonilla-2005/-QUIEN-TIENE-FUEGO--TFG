@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Perfil - ¿Quién tiene fuego?</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="main-header full-width">
+    <nav class="menu">
+      <div class="logo">
+        <a href="index.html">
+          <img src="logo.svg" alt="Logo ¿Quién tiene fuego?" style="height: 60px; display: block;">
+        </a>
+      </div>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="tienda.html">Tienda</a></li>
+        <li><a href="about_us.html">About Us</a></li>
+        <li><a href="cesta.html">Cesta</a></li>
+        <li id="nav-account-item"></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="full-width profile-section">
+    <div class="profile-container">
+      
+      <aside class="profile-card">
+        <h2>Mi Perfil</h2>
+        <div class="info-group">
+          <label>Nombre de usuario</label>
+          <p id="prof-name">Cargando...</p>
+        </div>
+        <div class="info-group">
+          <label>Dirección registrada</label>
+          <p id="prof-address">No especificada</p>
+        </div>
+        <div class="info-group">
+          <label>Email</label>
+          <p id="prof-email">Cargando...</p>
+        </div>
+      </aside>
+
+      <main class="orders-container">
+        <h2>Últimos Pedidos</h2>
+        <div id="orders-list">
+          <p style="color: #888;">Cargando tu historial de pedidos...</p>
+        </div>
+      </main>
+
+    </div>
+  </section>
+
+  <script src="account.js"></script>
+  <script>
+    // Variable global para guardar los pedidos y poder usarlos al hacer click en el botón
+    window.userOrders = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+      if (!currentUser) {
+        window.location.href = 'login.html'; // Protegemos la página
+        return;
+      }
+
+      // Mostrar datos del usuario
+      document.getElementById('prof-name').innerText = currentUser.name;
+      document.getElementById('prof-email').innerText = currentUser.email;
+      document.getElementById('prof-address').innerText = currentUser.address || "Dirección no especificada";
+
+      // Cargar pedidos desde MySQL
+      const list = document.getElementById('orders-list');
+
+      try {
+        const respuesta = await fetch(`get_pedidos.php?usuario_id=${currentUser.id}`);
+        const orders = await respuesta.json();
+
+        if (orders.error) {
+           list.innerHTML = `<p style="color: red;">${orders.error}</p>`;
+           return;
+        }
+
+        if (orders.length > 0) {
+          list.innerHTML = '';
+          window.userOrders = orders; // Guardamos en la variable global
+
+          orders.forEach(order => {
+            const fecha = new Date(order.fecha_pedido).toLocaleDateString('es-ES', {
+                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+
+            // Creamos la lista de productos comprados en este pedido
+            let detallesHTML = '';
+            if (order.detalles && order.detalles.length > 0) {
+              order.detalles.forEach(item => {
+                detallesHTML += `
+                  <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                    <img src="${item.imagen_url}" style="width: 30px; height: 30px; object-fit: cover; border-radius: 4px;">
+                    <span>${item.cantidad}x ${item.nombre}</span>
+                    <span style="color:#888; margin-left:auto;">$${parseFloat(item.precio_unitario).toFixed(2)}/u</span>
+                  </li>
+                `;
+              });
+            }
+
+            list.innerHTML += `
+              <div class="order-item" style="flex-direction: column; align-items: stretch; gap: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 10px;">
+                  <div class="order-info">
+                    <h4>Pedido #${order.id} <span style="font-size:12px; font-weight:normal; color:#d4af37;">(${order.estado})</span></h4>
+                    <span>Fecha: ${fecha}</span>
+                  </div>
+                  <div class="order-price">$${parseFloat(order.total).toFixed(2)}</div>
+                </div>
+                
+                <div class="order-details">
+                  <ul style="list-style: none; padding: 0; margin: 0; color: #ccc; font-size: 14px;">
+                    ${detallesHTML}
+                  </ul>
+                </div>
+
+                <div style="text-align: right;">
+                  <button class="btn" style="padding: 8px 16px; font-size: 14px;" onclick="repetirPedido(${order.id})">Repetir Pedido</button>
+                </div>
+              </div>
+            `;
+          });
+        } else {
+          list.innerHTML = '<p style="color: #888;">Todavía no has hecho ningún pedido.</p>';
+        }
+      } catch (error) {
+        console.error("Error al cargar pedidos:", error);
+        list.innerHTML = '<p style="color: red;">Hubo un error cargando el historial.</p>';
+      }
+    });
+
+    // Función para el botón Repetir Pedido
+    function repetirPedido(orderId) {
+      // Buscamos el pedido concreto en la variable global
+      const order = window.userOrders.find(o => o.id === orderId);
+      if (!order || !order.detalles) return;
+
+      // Recuperamos la cesta actual
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      // Recorremos los artículos antiguos y los metemos en la cesta
+      order.detalles.forEach(item => {
+        const productToAdd = {
+          id: item.producto_id.toString(), // Lo pasamos a String para que coincida con la lógica de cart.js
+          name: item.nombre,
+          price: parseFloat(item.precio_unitario),
+          img: item.imagen_url,
+          qty: parseInt(item.cantidad)
+        };
+
+        // Si ya está en la cesta, le sumamos la cantidad
+        const existingProductIndex = cart.findIndex(c => c.id === productToAdd.id);
+        if (existingProductIndex > -1) {
+          cart[existingProductIndex].qty += productToAdd.qty;
+        } else {
+          cart.push(productToAdd);
+        }
+      });
+
+      // Guardamos y mandamos a la página de cesta
+      localStorage.setItem('cart', JSON.stringify(cart));
+      window.location.href = 'cesta.html';
+    }
+  </script>
+</body>
+</html>

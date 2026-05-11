@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceder - ¿Quién tiene fuego?</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="main-header full-width">
+    <nav class="menu">
+      <div class="logo">
+        <a href="index.html">
+          <img src="logo.svg" alt="Logo ¿Quién tiene fuego?" style="height: 60px; display: block;">
+        </a>
+      </div>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="tienda.html">Tienda</a></li>
+        <li><a href="about_us.html">About Us</a></li>
+        <li><a href="cesta.html">Cesta <span id="cart-count" style="background:#d4af37; color:black; padding:2px 6px; border-radius:50%; font-size:12px; display:none;">0</span></a></li>
+        <li id="nav-account-item"></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="auth-section">
+    <div class="auth-container">
+      <div class="auth-logo">¿Quién tiene fuego?</div>
+      <h1 class="auth-title">Mi Cuenta</h1>
+
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Iniciar sesión</div>
+        <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Crear cuenta</div>
+      </div>
+
+      <form class="auth-form visible" id="form-login" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="login-email">Correo electrónico</label>
+          <input type="email" id="login-email" placeholder="tu@correo.com" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Contraseña</label>
+          <input type="password" id="login-password" placeholder="••••••••" required>
+        </div>
+        <div class="auth-error" id="login-error"></div>
+        <button type="submit" class="auth-btn">Entrar</button>
+        <div class="auth-divider">¿No tienes cuenta? <a onclick="switchTab('register')">Créala aquí</a></div>
+      </form>
+
+      <form class="auth-form" id="form-register" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label for="reg-name">Nombre completo</label>
+          <input type="text" id="reg-name" placeholder="Tu nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-email">Correo electrónico</label>
+          <input type="email" id="reg-email" placeholder="tu@correo.com" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Contraseña</label>
+          <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" minlength="6" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-confirm">Repetir contraseña</label>
+          <input type="password" id="reg-confirm" placeholder="Repite la contraseña" required>
+        </div>
+        <div class="auth-error" id="register-error"></div>
+        <button type="submit" class="auth-btn">Crear cuenta</button>
+        <div class="auth-divider">¿Ya tienes cuenta? <a onclick="switchTab('login')">Inicia sesión</a></div>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer full-width">
+    <p>&copy; 2025 ¿Quién tiene fuego? — Todos los derechos reservados.</p>
+  </footer>
+
+  <script src="account.js"></script>
+  <script src="cart.js"></script>
+  <script>
+    window.addEventListener('load', () => {
+      if (localStorage.getItem('currentUser')) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    function switchTab(tab) {
+      document.getElementById('form-login').classList.remove('visible');
+      document.getElementById('form-register').classList.remove('visible');
+      document.getElementById('tab-login').classList.remove('active');
+      document.getElementById('tab-register').classList.remove('active');
+
+      document.getElementById('form-' + tab).classList.add('visible');
+      document.getElementById('tab-' + tab).classList.add('active');
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const errorEl = document.getElementById('login-error');
+      
+      errorEl.textContent = '';
+
+      try {
+        const respuesta = await fetch('login.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            email: email, 
+            password: password 
+          })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (resultado.error) {
+          errorEl.textContent = resultado.error;
+        } else if (resultado.success) {
+          localStorage.setItem('currentUser', JSON.stringify(resultado.usuario));
+          window.location.href = 'index.html';
+        }
+
+      } catch (error) {
+        console.error("Error en la petición de login:", error);
+        errorEl.textContent = 'Error de conexión con el servidor.';
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('reg-confirm').value;
+      const errorEl = document.getElementById('register-error');
+      
+      errorEl.textContent = '';
+
+      if (password !== confirm) {
+        errorEl.textContent = 'Las contraseñas no coinciden.';
+        return;
+      }
+
+      try {
+        const respuesta = await fetch('registro.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            nombre: name, 
+            email: email, 
+            password: password 
+          })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (resultado.error) {
+          errorEl.textContent = resultado.error;
+        } else if (resultado.success) {
+          alert('¡Cuenta creada con éxito! Ahora inicia sesión.');
+          document.getElementById('form-register').reset();
+          switchTab('login'); 
+        }
+
+      } catch (error) {
+        console.error("Error en la petición:", error);
+        errorEl.textContent = 'Error de conexión con el servidor.';
+      }
+    }
+  </script>
+</body>
+</html>

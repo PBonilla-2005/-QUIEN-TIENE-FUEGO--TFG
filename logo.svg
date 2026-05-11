@@ -1,0 +1,29 @@
+<svg viewBox="0 0 260 60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo oscuro (#0a0a0a) -->
+  <rect width="100%" height="100%" fill="#0a0a0a" rx="8"/>
+
+  <!-- Interrogación inicial -->
+  <text x="15" y="42" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#d4af37">¿</text>
+
+  <!-- ICONO: La Llama y la Cerilla formando la 'Q' -->
+  <g>
+    <!-- Llama exterior (Forma de gota/círculo de la Q) -->
+    <!-- Empieza abajo, curva por la derecha hasta la punta, y baja por la izquierda -->
+    <path d="M 48 45 C 62 45, 62 25, 48 8 C 34 25, 34 45, 48 45 Z" fill="none" stroke="#d4af37" stroke-width="2.5"/>
+    
+    <!-- Llama interior (Sólida, dando volumen al fuego) -->
+    <path d="M 48 40 C 56 40, 56 28, 48 18 C 40 28, 40 40, 48 40 Z" fill="#d4af37"/>
+
+    <!-- Palo de la cerilla (El rabillo de la Q) -->
+    <line x1="53" y1="39" x2="65" y2="51" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/>
+    
+    <!-- Cabeza de la cerilla (El punto de ignición en blanco) -->
+    <line x1="50" y1="36" x2="55" y2="41" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Resto del texto perfectamente alineado -->
+  <!-- Línea superior -->
+  <text x="75" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#d4af37" letter-spacing="1">UIÉN TIENE</text>
+  <!-- Línea inferior -->
+  <text x="75" y="45" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#ffffff" letter-spacing="2">FUEGO?</text>
+</svg>

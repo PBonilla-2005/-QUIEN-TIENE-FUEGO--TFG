@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio - ¿Quién tiene fuego?</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="main-header full-width">
+    <nav class="menu">
+      <div class="logo">
+        <a href="index.html">
+          <img src="logo.svg" alt="Logo ¿Quién tiene fuego?" style="height: 60px; display: block;">
+        </a>
+      </div>
+      <ul>
+        <li><a href="index.html" class="active">Inicio</a></li>
+        <li><a href="tienda.html">Tienda</a></li>
+        <li><a href="about_us.html">About Us</a></li>
+        <li><a href="cesta.html">Cesta <span id="cart-count" style="background:#d4af37; color:black; padding:2px 6px; border-radius:50%; font-size:12px; display:none;">0</span></a></li>
+        <li id="nav-account-item"></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <img src="IMAGENES/IMAGEN_INDEX.png" alt="Tu estilo, nuestra pasión">
+    <div class="hero-text">Tu estilo, nuestra pasión</div>
+  </section>
+
+  <!-- SECCIÓN BEST SELLERS -->
+  <section class="best-sellers full-width">
+    <h2 style="color: #d4af37;">Best Sellers</h2>
+    <div class="grid" id="best-sellers-grid">
+      <p style="text-align:center; color:#d4af37; grid-column: 1 / -1;">Cargando los mejores productos...</p>
+    </div>
+  </section>
+
+  <!-- SECCIÓN CALL TO ACTION -->
+  <section class="cta full-width">
+    <h2>¿Listo para subir de nivel?</h2>
+    <a href="tienda.html" class="btn">VER TODO EL CATÁLOGO</a>
+  </section>
+
+  <footer class="footer full-width">
+    <p>&copy; 2026 ¿Quién tiene fuego? — Todos los derechos reservados.</p>
+  </footer>
+
+  <script src="account.js"></script>
+  <script src="cart.js"></script>
+  <script>
+    // Función para cargar los Top Ventas REALES
+    async function loadBestSellers() {
+      const grid = document.getElementById('best-sellers-grid');
+      
+      try {
+        // AQUÍ ESTÁ LA MAGIA: Llamamos a tu archivo específico
+        // Si tu archivo se llama de otra forma, cambia 'get_bestsellers.php' por el nombre real
+        const respuesta = await fetch('get_bestsellers.php?t=' + new Date().getTime());
+        const productos = await respuesta.json();
+
+        grid.innerHTML = '';
+
+        if (productos.error) {
+           grid.innerHTML = `<p style="color:red; text-align:center; grid-column: 1 / -1;">Error: ${productos.error}</p>`;
+           return;
+        }
+
+        if (productos.length === 0) {
+           grid.innerHTML = `<p style="text-align:center; color:#888; grid-column: 1 / -1;">Aún no hay ventas para mostrar best sellers.</p>`;
+           return;
+        }
+
+        // Ya no hace falta el .slice(0,3) porque tu PHP ya hace el LIMIT 3
+        productos.forEach(prod => {
+          const productHTML = `
+            <div class="item product-card" 
+                 data-id="${prod.id}" 
+                 data-name="${prod.nombre}" 
+                 data-price="${prod.precio}" 
+                 data-img="${prod.imagen_url}">
+              
+              <div class="item-title" style="background:#d4af37; color:#000; padding:2px 8px; border-radius:4px; font-size:12px;">¡Top Ventas!</div>
+              
+              <!-- ENLACE EN LA IMAGEN -->
+              <a href="producto.html?id=${prod.id}">
+                <img src="${prod.imagen_url}" alt="${prod.nombre}">
+              </a>
+              
+              <div class="item-info">
+                <!-- ENLACE EN EL TÍTULO -->
+                <a href="producto.html?id=${prod.id}" style="color:#fff; text-decoration:none;">
+                  <p style="margin-bottom:8px; font-size:16px; font-weight:bold;">${prod.nombre}</p>
+                </a>
+                <p class="price">$${parseFloat(prod.precio).toFixed(2)}</p>
+                <button class="btn" onclick="addToCart(this)">COMPRAR</button>
+              </div>
+            </div>
+          `;
+          grid.innerHTML += productHTML;
+        });
+
+      } catch (error) {
+        console.error("Error al cargar Best Sellers:", error);
+        grid.innerHTML = '<p style="color:red; text-align:center; grid-column: 1 / -1;">Error conectando a la Base de Datos.</p>';
+      }
+    }
+
+    // Ejecutar cuando cargue la página
+    document.addEventListener('DOMContentLoaded', loadBestSellers);
+  </script>
+</body>
+</html>
